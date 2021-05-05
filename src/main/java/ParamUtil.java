@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Stack;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.builder.MultilineRecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -24,7 +26,8 @@ public class ParamUtil {
 		payload = Arrays.asList(payload.split("\n")).stream().reduce("", (r, e) -> r+"&"+e);
 		
 		CommonParams params = convertToObj(payload, CommonParams.class);
-		int a = 1;
+		
+		System.out.println(ReflectionToStringBuilder.toString(params, new MultilineRecursiveToStringStyle()));
 	}
 	
 	private static boolean isInt(String num) {
@@ -136,24 +139,52 @@ public class ParamUtil {
 							if (isMap(obj)) {
 								if (i+2 < subKeys.length &&
 									subKeys[i+1].equals("member") && isInt(subKeys[i+2])) {
-									Object o = new ArrayList();
-									((Map)obj).put(camelCase(subKeys[i]), o);
+									Object o = ((Map)obj).get(camelCase(subKeys[i]));
+									if (o == null) {
+										o = new ArrayList();
+										((Map)obj).put(camelCase(subKeys[i]), o);
+									}
 									objects.push(o);
 								} else {
-									Object o = new HashMap();
-									((Map)obj).put(camelCase(subKeys[i]), o);
+									Object o = ((Map)obj).get(camelCase(subKeys[i]));
+									if (o == null) {
+										o = new HashMap();
+										((Map)obj).put(camelCase(subKeys[i]), o);
+									}
 									objects.push(o);
 								}
 							} else if (isList(obj)) {
 								if (i+2 < subKeys.length &&
 										subKeys[i+1].equals("member") && isInt(subKeys[i+2])) {
-									Object o = new ArrayList();
-									((List)obj).add(o);
-									objects.push(o);
+									if (idxes.isEmpty() == false) {
+										try {
+											Object o = ((List)obj).get(idxes.peek());
+											objects.push(o);
+										} catch (IndexOutOfBoundsException e) {
+											Object o = new ArrayList();
+											((List)obj).add(o);
+											objects.push(o);
+										}
+									} else {
+										Object o = new ArrayList();
+										((List)obj).add(o);
+										objects.push(o);
+									}
 								} else {
-									Object o = new HashMap();
-									((List)obj).add(o);
-									objects.push(o);
+									if (idxes.isEmpty() == false) {
+										try {
+											Object o = ((List)obj).get(idxes.peek());
+											objects.push(o);
+										} catch (IndexOutOfBoundsException e) {
+											Object o = new HashMap();
+											((List)obj).add(o);
+											objects.push(o);
+										}
+									} else {
+										Object o = new HashMap();
+										((List)obj).add(o);
+										objects.push(o);
+									}
 								}
 							}
 						}
