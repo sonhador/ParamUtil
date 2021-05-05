@@ -167,12 +167,8 @@ public class ParamUtil {
 								break;
 							} 
 						}
-						while (objects.isEmpty() == false) {
-							objects.pop();
-						}
-						while (idxes.isEmpty() == false) {
-							idxes.pop();
-						}
+						objects.clear();
+						idxes.clear();
 					} else {
 						map.put(camelCase(subKeys[i]), val);
 					}
