@@ -122,12 +122,41 @@ public class ParamUtil {
 					} else if (subKeys[i].equals("member")) {
 						continue;
 					} else {
-						Object obj = map.get(camelCase(subKeys[i]));
-						if (obj == null) {
-							obj = new HashMap();
-							map.put(camelCase(subKeys[i]), obj);
+						if (objects.isEmpty()) {
+							Object obj = map.get(camelCase(subKeys[i]));
+							if (obj == null) {
+								obj = new HashMap();
+								map.put(camelCase(subKeys[i]), obj);
+								objects.push(obj);
+							} else {
+								objects.push(obj);
+							}
+						} else {
+							Object obj = objects.peek();
+							if (isMap(obj)) {
+								if (i+2 < subKeys.length &&
+									subKeys[i+1].equals("member") && isInt(subKeys[i+2])) {
+									Object o = new ArrayList();
+									((Map)obj).put(camelCase(subKeys[i]), o);
+									objects.push(o);
+								} else {
+									Object o = new HashMap();
+									((Map)obj).put(camelCase(subKeys[i]), o);
+									objects.push(o);
+								}
+							} else if (isList(obj)) {
+								if (i+2 < subKeys.length &&
+										subKeys[i+1].equals("member") && isInt(subKeys[i+2])) {
+									Object o = new ArrayList();
+									((List)obj).add(o);
+									objects.push(o);
+								} else {
+									Object o = new HashMap();
+									((List)obj).add(o);
+									objects.push(o);
+								}
+							}
 						}
-						objects.push(obj);
 					}
 				} else {
 					if (objects.isEmpty() == false) {

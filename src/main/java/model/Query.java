@@ -7,4 +7,6 @@ public class Query {
 	public String id;
 	public List<Filter> filters;
 	public List<Query> queries;
+	public Query query;
+	public Filter filter;
 }
