@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,7 +63,8 @@ public class ParamUtil {
 	private static <T> T convertToObj(String payload, Class<T> clazz) throws JsonProcessingException {
 		Map<String, Object> map = new HashMap<>();
 		
-		String []keyVals = payload.split("&");
+		List<String> keyVals = new ArrayList<>(Arrays.asList(payload.split("&")));
+		Collections.sort(keyVals);
 		
 		for (String keyVal : keyVals) {
 			String []elems = keyVal.split("=");
