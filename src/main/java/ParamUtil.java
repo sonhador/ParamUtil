@@ -200,6 +200,7 @@ public class ParamUtil {
 								break;
 							} else if (isList(o)) {
 								((List)o).add(val);
+								break;
 							}
 						}
 						objects.clear();
