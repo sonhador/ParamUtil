@@ -198,7 +198,9 @@ public class ParamUtil {
 							if (isMap(o)) {
 								((Map)o).put(camelCase(subKeys[i]), val);
 								break;
-							} 
+							} else if (isList(o)) {
+								((List)o).add(val);
+							}
 						}
 						objects.clear();
 						idxes.clear();
